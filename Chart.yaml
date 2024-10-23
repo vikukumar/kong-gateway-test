@@ -1,0 +1,10 @@
+apiVersion: v2
+name: gateway
+description: A Helm chart for running kong on Kubernetes
+type: application
+version: 1.0.0
+
+dependencies:
+- name: kong
+  version: "2.42.0"
+  repository: https://charts.konghq.com

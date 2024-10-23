@@ -1,0 +1,54 @@
+kong:
+  image:
+    repository: kong/kong-gateway
+    tag: "3.8.0.0"
+
+  secretVolumes:
+  - konnect-gateway-tls-cert
+
+  admin:
+    enabled: false
+
+  manager:
+    enabled: false
+
+  env:
+    role: data_plane
+    database: "off"
+    cluster_mtls: pki
+    cluster_control_plane: 8ba263d838.us.cp0.konghq.com:443
+    cluster_server_name: 8ba263d838.us.cp0.konghq.com
+    cluster_telemetry_endpoint: 8ba263d838.us.tp0.konghq.com:443
+    cluster_telemetry_server_name: 8ba263d838.us.tp0.konghq.com
+    cluster_cert: /etc/secrets/konnect-gateway-tls-cert/tls.crt
+    cluster_cert_key: /etc/secrets/konnect-gateway-tls-cert/tls.key
+    lua_ssl_trusted_certificate: system
+    konnect_mode: "on"
+    vitals: "off"
+    nginx_worker_processes: "1"
+    upstream_keepalive_max_requests: "100000"
+    nginx_http_keepalive_requests: "100000"
+    proxy_access_log: "off"
+    dns_stale_ttl: "3600"
+
+  ingressController:
+    enabled: false
+    installCRDs: false
+
+  proxy:
+    enabled: true
+    type: ClusterIP # Service type
+
+  konnect:
+    enabled: false # TODO: Use konnect values instead of setting them as env variables? Seems like a better approach even though envs is what Konnect supplies
+
+  replicaCount: 1
+
+  # Pod gets OOMKilled with default Stater K8s values
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: 1
+    limits:
+      memory: 4Gi
+      cpu: 2
